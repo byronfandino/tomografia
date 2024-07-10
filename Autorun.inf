@@ -1,0 +1,4 @@
+[autorun]
+
+SHELLEXECUTE=Ver_Mis_Imagenes.html
+ICON=Logo.ico

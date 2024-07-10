@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="Windows-1252">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/x-icon" href="Logo.png">
+    <style>
+        .center {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: center;
+            align-content: stretch;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 60%;
+            height: 25px;
+            cursor: pointer;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            border-radius: 5px;
+            width: 25px;
+            height: 25px;
+            background: #04AA6D;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            background: #04AA6D;
+            cursor: pointer;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: #F5BF87;
+        }
+        ::-webkit-scrollbar-thumb {
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.9);
+        }
+
+        .slider-vertical {
+            width: 150px;
+            height: 20px;
+            margin: 0;
+            transform-origin: 75px 75px;
+            /*transform: rotate(-90deg);*/
+        }
+        .slider-vertical:hover {
+            cursor: pointer;
+        }
+
+        .cursor-pointer {
+            cursor: pointer !important;
+        }
+
+        .color-white {
+            color: white;
+        }
+
+        .color-yellow {
+            color: yellow;
+        }
+
+        #inputRangeImageAdvance {
+            margin-left: 10px !important;
+            margin-right: 10px !important;
+        }
+
+
+        .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+            width: 100%;
+            padding-right: var(--bs-gutter-x, .75rem);
+            padding-left: var(--bs-gutter-x, .75rem);
+            margin-right: auto;
+            margin-left: auto
+        }
+
+        @media (min-width: 576px) {
+            .container, .container-sm {
+                max-width: 540px
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container, .container-md, .container-sm {
+                max-width: 720px
+            }
+        }
+
+        @media (min-width: 992px) {
+            .container, .container-lg, .container-md, .container-sm {
+                max-width: 960px
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .container, .container-lg, .container-md, .container-sm, .container-xl {
+                max-width: 1140px
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+                max-width: 1320px
+            }
+        }
+
+        hr {
+            height: 1px;
+            color: white;
+            background-color: white;
+            border: none;
+            margin-bottom: 1cm;
+            margin-top: 0;
+            z-index: 1000000000000000 !important;
+        }
+
+        .button-toolbar-default {
+            background-color: white !important;
+        }
+
+        .button-toolbar-selected {
+            background-color: yellow !important;
+        }
+
+        .cursor-pointer {
+            cursor: pointer !important;
+        }
+
+        @media print {
+            canvas {
+                background-color: white;
+                height: 100%;
+                width: 130%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                margin: 0;
+                padding: 15px;
+                font-size: 14px;
+                line-height: 18px;
+            }
+        }
+
+        @page { size: landscape; }
+
+        #toolbar button, #toolbar select {
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #toolbar img {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #buttonPLay {
+            margin-right: 1em;
+        }
+
+        #labelImageCount {
+            margin-left: 1em;
+        }
+
+        #selectTypeDicomScale {
+            width: 150px !important;
+            margin-left: 40px;
+        }
+    </style>
+    <script type="text/javascript" src="Imagenes/PATHS"></script>
+</head>
+<body style="background-color: gray">
+<div id="toolbar">
+    <div class="flex-between">
+        <div>
+            <button title="Crear Línea" id="buttonTypeLine" onclick="pressOptionToolbar(this, typeLine)">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAABuwAAAbsBOuzj4gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAMFSURBVHic3Zu/TxRBFIC/d2J5obIgF0notIHGa22ssKSwoyHZTlriX6EmlCZggjYUlNDcfyANSCKdCYoUdhIbvPAsZrgbNntBYWbnx0smN3P77rLft3sze8k8UVVKDBFZBF4AT4BZ4BD4BKyr6tdRoqoW1YBpYBPQCe0cqEb5sU/YM7wAAwd2CHwGdoHvNRFViQJWHcAjYKF2vAJ+O3fCXPST9izgh4X7BcxOyKkcSa87nuac6CEiPWDGDrdU9aQpT1XfAad22C9GALDg9A9uyD20r/MlCfjp9GcmZpl4aF9PShJwDPyx/SURmWpKEpEF4LEd7hcjQFXPgQ92OA+8qUsQkVngI3DPvrXdaCnjOHb6L4GnIrIDnGHmiGWga4+/V9W96EuXxyVwBbhk8hOg2wbAtGohD0I1+EtgDdgALmrgPzAPSzL6bOyTDwC/4hzrAn3gOdBr/HxsgFDw//wdsSFiwmcrwBd8lgJ8wmcnwDd8VgJCwGcjIBR8FgJCwicvIDR80gLagE9WQFvwSQpoEz45AW3DJyUgBnwyAmLBJyEgJnx0AbHhowpIAT6agFTgowhICb51AanBtyogRfjWBKQK34qAlOGDC0gdPqiAHOCDCcgFPoiAnOC9C8gN3quAHOG9CcgV3ouAnOHvLCB3+DsJKAH+1gJKgb+VgJLgJwoAepiNRX2gWyr8NQGYYoNVxlvOr9oFZsvZWmnwIwGYMpNBDXxSKwZeVbnaKvsWeGb758AWZsv5DLCE2Xt7Fa9UdYOCYpHrZSbXKi2AKWDdydmIfdW8/gQYV1gNqdXY1CQcMJ4Tum2eZMjWwdTVAXxR1cZKC1UdAjt2eB945PUejBgdTFEhwLcbcs+c/oMwp9N+dHDqZ27I/Z+anGyigyknBeiJSNWUZCstlu3wTFVPm/JyjTnM0qeYosLKnSQwV/6I8SqwGnvi8roKWEi3mFAxZaa7mLLTofP+AKfYoITmXunKuROa2ia2zKSkJhYeABGZw/wf6GMmxRNgH9hW1b0AP7/o8RfJJmy3Ym4kugAAAABJRU5ErkJggg==" alt="">
+            </button>
+            <button title="Crear Cuadrado" id="buttonTypeSquare" onclick="pressOptionToolbar(this, typeSquare)">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAB2AAAAdgB+lymcgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAD0SURBVHic7ZsxCsJAFAUnweNIxNZb5lJWGhG8TqJFgkVIvVP8N7CwbDU7bNJ9gAswATPwLbLm7c5Dt22u1GTqWGv0tonE0rE+ibKcDs4+wL21SCNuwHl/uP9BjI2lWjKyu2/Vb/9PAtgCNglgC9gkgC1gkwC2gE0C2AI2CWAL2CSALWCTALaATQLYAjYJYAvYJIAtYJMAtoBNAtgCNglgC9gkgC1gkwC2gE0C2AI2CWAL2CSALWCTALaATQLYAjYJYAvYJIAtYJMAtoBNAtgCNglgC9gczQ2WGpsrPzjZA4stIbL0wNu2EHkBDMCTeuPzD2D4AYNtk2OdEAcUAAAAAElFTkSuQmCC" alt="">
+            </button>
+            <button title="Crear Circulo" id="buttonTypeCircle" onclick="pressOptionToolbar(this, typeCircle)">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAABuwAAAbsBOuzj4gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAO/SURBVHic7Zs9TxsxHMZ/PqQIibVIBcHECpUyIkSHSAUxtGUOQ2ZWhqofoQN8hg4VnVN1KyhDEYwg2rVhQSKV0oEFKUvy72CH3Dm+ECUXH8nlkbz4/PI8z/nl7LOViDBKKKXmgAKwAiw6AsCdI1SBiog8jJTfKAxQSs0Db4Fd4A0wO2BRDeAEKAPfRaSeDMMQRCSRAOSAfeAMaAKScGgCP00ducR4JyBcAUXgZgSi48KNqVMNy3+oLqCU2gI+AfknktaBCnCL7t81On0d9FiwQGdcWEaPG/NPlHsFfBSRH4PwBwZrAcASum/2ekt/gCNgEwgGqCMweY9MWb3qOgGWvHQBYB39Bl1EWsAXYC2pPhqqd82U3Yqpuwasj9QAoIQemePeQj5p4Q4O+R6trwGUEjcAmAEOYyq9BrZHLdzBadvU7eJ0CMwkYoARX46p6DMJTkkDmJAzHFzcyv2Y0E8lrjffBA7SEu7geID72+NwKANMn7cLvQd20hbt4LpjuNl8SwMZYEZ7e8C7B1bTFtuD86rDhEav2SGuoCW6p7rmc3zzMS3B7g41Yr4T4gpxTTPPps/3YcKBg/9JXwYAW67RPm1RA5jgmh22ehqAXthcWpmu05zqhjAgR/d3wiXWAsrOVHS45v0jJ0ETth16ik4DjGP2ktbZb8YpOMazm3CLDifctxK28PBt78GAPN0LqP3284AOikRxLCJXjDmMhmMr+lGrEpH2Ht5fiBjySkR+e+A4ciil1oBfoagW8FJE6m3B74iKr06KeACjpRqKCtCaH0XvWnm+eeDlG7amXdDz/hzwj+jW9WsROfNEzAuUUpvoXeU2GsCLAL35GBZfB849cvOFc7S2NmaBQoD+YxNGRURa3mh5gtFUsaJXAjq/p9q49UMpFdjaFl0G3DG5sLVNDXAZUPNEJg3Y2qYtIHAmyxACHK6kQcQTulq7y4AFT2TSgK3NaUDmW0DmDVj2RCYN2NruAqLrZICCUmriZgejqWBFVwP0AqERipwHNnwR84gNokduGkAlEH0O79RKbG+QTAJsTaci8tBu6mXr4XsPhHzD1lSG6aao3hQVfQLzwsr3wRM/H7C1XBjNkTf+1Uq0p5R66vzfs4fRsGdFd7ROf41FE2f356jJkO3f4yZjdg9IhDJn94iMKSDbh6RMQdk9JhcqsORoStk4KBkqOLtHZU3h2T4sHTIhm8flrUpLjoHxcZphUi9MWASye2UmRGZiLk1Nr80l0DTH+uJkkn10LK/OZv7y9EgMiFTwzK/P/wfGX5M7QvS9bAAAAABJRU5ErkJggg==" alt="">
+            </button>
+            <button title="Crear Ángulo" id="buttonTypeAngle" onclick="pressOptionToolbar(this, typeAngle)">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAG7AAABuwE67OPiAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAOFQTFRF////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9iDqgQAAAEp0Uk5TAAECAwoMDQ4PEhMWFyAiIyQlJicoNj9AQUNIXGBnaG9xc3SAgYWGh5SeoqanqK2xuMPExcbHyNTV1tfe3+Dj5OXm5+nu8fn7/f7NVGZQAAAA8UlEQVRYw+3Qx1ICARRE0VYMgxiIJkRMCKJiZBQDwgCC9/8/yIUryyop31swVs3dn160lPT/Su1mXL74wvu2x0fApdNTdfqbBadftPpCBHA7O9+PhV/y+bvEu/y92efj4Zd9vm33vcRDODOfi4V/DnyeyY7PQ5Rx+B7A9Zz9v+AK4MDg3768VrrAMDB7aXMCnNi91ARGabtXdgyc/sVnv3npDBik7F4bAFt2L4VAw+F1BPTn7V5rACW7l56APYdXC6g7vGpAy+FVBh6m+vUuAI/hzzrAOPytdn1V57i60Mg38Kpjl/84lEqVfXOVopLi0Ce5LK5j18l1XgAAAABJRU5ErkJggg==" alt="">
+            </button>
+            <button title="Mover Imágen" id="buttonTypeMove" onclick="pressOptionToolbar(this, typeMove)">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAB2AAAAdgB+lymcgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAG/SURBVHic7ZrBTsMwDIZ/4JVXccQcGBPiEXgZDjwMgjvdaRxaa0U0beracZvkk3KZVtv/t0nN0gGVSqXiBwE4eQ/hBQG49Ks4CYRr+OIkEP6HL0YCIRw+ewmE+fDZSiDEh89OAmF5+GwkEOThdy+hwfrwvJrEs6vwBT0Bn1ZD3loVBvAG4KxQ59zXMuHGqvAMl8Dryeex/AbsgirAewBvqgDvAbyRCmgAfAM4Ks4i5YRuz5Fss0S4blBaYY3QhkdCO7iehDWiIegMrSkg2W8HGmm2RQEmEijQaKsCVCXQRJMtC1CRQDMNti5glQSKKL6XtVhCTuEXS8gxfFDC2E7wJ9bUDonOdg//T0t7PcSGz1HC4vBLJEhIUWt1eGZOgoRUAlaHZ6YkSEhRSy08E5IgwVqAenhmTIIESwFm4RkaNCvuQIQ5oHtc9SS8XlPAsZ/lILm4PhlK3XBrVAHeA3hTBXgP4I2lgBP+3qNjbndj720BPBvOaUbxf5F5Uaz1qlgrKRqHKuZ7e2vWSNh9eEYiIZvwzBIJ2YVnYiRkG56ZkpB9eGZMQjHhmaEEt/B3Xo0BfKA7AHkH8Og4R6VSKZhfnDrcz8oyqlEAAAAASUVORK5CYII=" alt="">
+            </button>
+            <button title="Imprimir" id="buttonTypePrint" onclick="printImage()">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAB2AAAAdgB+lymcgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAP/SURBVHic7ZtJTxRBFMd/DktEE2WMYiIGN8QTJN5cDh48GL1oYjwb73pTCTFxD5/Aj0AkxgsBEomSzIAXPXnAi8s4uGACGOEgYBwED9UTqnu66aqeqa4enH/yku6u5f3rTVfXe69qoHy0At3AOPAdWAZWDcmyo2Pc0dlaAf6R0Qj0AouYG3CYLAIPgQbDYy1BGshGJG1CMkBzlIFsitCmHhgBTvuU5YAp4E8UMgpoRLz2h3zKXgDnENPEKHoo/QX6gHbTiiW0A499eNw0rTgNzHuUdptWug68P8YcEaeCKq54FA6YVKaIIdycLptU9sSj7JhJZYo4gZtTv0llryVFC0DKpDJFpHAvxa90G+tgp3T9A1jRbG8CK8CsdL9Lp7GuAeT6SRh8ETIXrTEl4RW2ipoBbBOwjZoBbBOwjaBgKA1cAM4CbawtLW2IYAhE0PHFKDt1BPGaBT4jgrcBhKu8LuoR/rXX398IMoeIW4qGKkEaGE0AUdPyHClgKk6BRqfglI9hloBpkuX4qCAF7AaafMoywBmgUHzQS6mlBhDBTjV/KFPAcWCQ0vE9KFZqpTSvZzPGNwVv7mAB2ANisHJBnyWCcaAf91hvgEgxyw/jTG3FjQ7cY82CyLMXH3z0adSFMFIuQMaATrO8K4pPrI13CtwbGeM+DbxviJ+MmWZdQbxkjfdyCqiTCv/6NFhV6FSlTlIgp83rAr0iCVeBR8DegPKvwLVyWdmCigEm8HeQNgSq2cmpCGoGsE3ANmoGsE3ANmoGsE3ANlT8gC6EI2T1PE4EfEM4cRNhFWWfPuNTrhILJFX8YpSMXEdlClSTn+9FKHfdWKCa0uLKMUpYOCwjL9XNR2FqCDq8SsLhGamw2j50USCPcTqFOwt0EDgcL59YcQQ4IN1/SAHDnkr34uMTO+577ofBPy3eE9BB1G9AWF6x3DyjCq9buMf4CyctDuK8rXcNHUKcwJKXyqgGiOJL6OQZg3ilgJOIX9rb/125gwY8DoIkS06nOcRWUhQDjAX0vZ5kNfqXDVBwuOYd7n59j+LjAjQj9gdVCeoYoBNhBNUpkCX6FAiTEWB7UEf1iPO2cwodJdUPCJKfwHXcWfDAAxLNwHnEAYl9QIvzXPa4JnEvKTaRB/Y717KHOoPg+QyxQTpfCUVJfwO0eNXyATHp0c0pKMfycaPa/IBQxDUFVmNqo424pkDY/qIXse03xmWAxO4v/vergK4BCtL1lkoSKRNbpetCYC0f6BpAzgG2ABc125vAJdz/EpnUaaz7DRjE/YfJp8AbhJ9tAzuAo55ngyYVNgHv0V/T45J3wGZjo3fQgfukVVIk53CLBduAO8Bb4LehAanIEmKJve1w0sY/Hen3h6Ia02YAAAAASUVORK5CYII=" alt="">
+            </button>
+            <button title="Activar / Desactivar Regla" id="buttonTypeRuler" class="button-toolbar-selected" onclick="clickRuler()">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAB2AAAAdgB+lymcgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAMhSURBVHic7Zs/b9NAGIcfJyDBDB0Q/9sFUeiAhICVBTZAYmABhS+AxMaAEN+AwISYoAugfITuCMRQECtClAWIYEBU0FZAGexTW+d9z4n/3l3ySF3su7Of351f20kKEyb4RtT0CTTFLPAOWAW6QLvZ06mXI8BnYH3T3zNgW5MnVReS/NiEYJMPPoRjQJ9B4WVh2zyB1QRt5u8BB4EPwr5gVoJN3twCDxBoCMPIG4ILYRR5QzAh5JE3eB9CEXmDtyGUIW/wLoQy5Q3ehKA95HTJlp8DbgBHlf2HgSVhbGcelorInwDWkvYrwAWlnbMhFJEHuJXqt8roIXTzn34xisoDnAL+MnwI0wy+O/wGWrkMClCGvOE6w4UQJeOnj/k2l0EBypQ3aCFcTPZr8n3iT5Zqo4pbnaHDYAhrwCV0+eMFjzkSVcx8mg6DIfwTjtlPzqc2qpz5NFeAP8Kxgpn5OeAqMGVp08GRmS9b/jwbs/sFWcZW8LyWB3iUGusrW6U0+XS7yqmq4F0TxjRyEXFN8Vp+D3Aa+5uaJvlE2e6N/FngV9L+FbBLaactc2fl7zPcsn+e6rdI/hC8kwe4K/TPCmFR6OOlPMAOYEEYRwrBmYKnPeE9JF+134kcwhtgd9LGdp+v9QmvbHlDVghOyJe17DW0EL4J27xf9hpaCEHN/BQwY9lvC8Hbam+4TPxJ7jrxU5z09BcBD4Rjei8P8Do1Vo+tITj/YlO04PWEMXvAdhySnyW/fItYRmMv8F4Yu5eM37g8xL/DyyN/DvhO/HJz09JuH3IITsi32ChS5m+Z+BuWLNLB3ba0zQqhEXmDdB1+JDuEl0I/Wwj7gR9Cn0blIf7icJ7RQziJLCSF4EzB02gBjxk8wU/YH2LOIIdwZ1MbZ15ssqgihAi52jsnb8h7OWghvBC2ObPsNWwrYdrSTwvBi5lPo4WwRP4QvJE32C6HQ0qfCHgq9HF+2Wu0kD+Ll1aCdwVvWNpkhxCsvMEWwgye3OeLotWEn8I2b6/5LLSVEPTMp7GFELy8QQphbOQNbeLit0L8hUatP0VzibH9t9YJvvIf3FAIg8Cv//QAAAAASUVORK5CYII=" alt="">
+            </button>
+            <button title="Centrar Imagen y Mostrar Tamaño Completo" id="buttonTypeCenterImage" onclick="centerImage()">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAB2AAAAdgB+lymcgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAQjSURBVHic7dtNaF1FFAfw32vTNkpxIYgu0rRENAu1WgvVtuLGpIpW0LgoiBb8QBREd1Ww7nXZqhSttTGiggvBulD8wq+ooNaKCtaWomJp/YilVo1im7iYec3L631JXpM3o3nvD8PcO2fmnv89b+7MmTnzaHKUMujsxLk1ZN/g+4RcsmA/Rmuk/anJ5OgBwziAx6vK78RZOCU5o8QYxjsF5e9GWVLMSa3wv4aWAXITyI2WAXITyI2WAXITyI2WAXITyI0UBvjQeH+/PebVqJSV0weNJtfWaAXYg0vxK96MZc8X1NuEH+P1FTgdexvOLgEW4iuM4Pop1F8b6+7GaQ3klRTdOIxDOHuCeovxC47gvAS8kmKd8F1/jlML5O34NNa5OSGvpNgsvOAzBbJtUbYpKaPEmIf3hBe9taL8tlj2EeZn4JUUHfhJ2PxYjqX4A0PCGNAU6MFRYZrbG697sjLKgI3GHJ4HMnOpGyXBS3tamOdPBnOwPaaT9UgXRg6DEm/wLjD2632N81Mqj+jGFxU8FqRUXjbAIcFrOyLM81NFCatwB+7FJZhbR/t1UedI5JDNADtwjeDnjwp7/ZNNY8sE17g6KPIZVkzStg0PxfqHcUPkMG0DdOJgAanJ0o7Yvgs7ja3gOmrouQh/4m88hj5cKxjuGH4TpsYidMRnj0ZdXbG8bIB60sH4zsdXg904U1i5fVeDQBG2x3yf0KUfFZyanbgRb1TULeHZqPMqvFUhezmmlwSPcJnxS+YePIczovxu/BVl/eqLJi3GOcI7H49D9kaFG+p4UC2sFxybEaG7lkf4VVHHlgnabo11Vsf7Eu4T/IRhYcyYLjZEHb00ZkNkQHiBfQL5bbF8acxfmaBt+ZO6IObbBSN+i5V4YiaJkmZHqNyV26ruizC/Km84GmGA9YJj0oWHcXss/zjmV0/Qdk3Md8X8FtyPJcLW2kx8AuNQ9p568Zr6B8EteDFetxsbBH924iA4F58I3XstXq161pXCJ7AHFwqzQhkTDYJ9uKsOzuVBcA1eLxd2CjH7Rk+DK4Sp7qgw9a3FdcLg948wRdbyBWZyGjyARbUsNBVMxxFaLnTxalJfyugI1YuZcIUvE06F3IPL/U9d4aZdDJUET67f9JbDTwmD2nSWw/1CvCHHeadp4UFjv97GzFySo6m3xCo3RS82flN0ST5aaTAP7ztxW/wmTbIt/ojwolsLZE9G2eakjBKiMjRWtH5vF1zlWRkaqzc4+rtZFBw9mfD4MbMoPD4gdOshvBBTX0G9vgr5UGwzkIhjQzHoxIVP0WHptwvqDTaaXIojMqur7mudCC8Ja/ykx+Vbp8RyE8iNlgFyE8iNlgFyE8iNlgFyE8iNpjdACk+wCIuEwGl1WVNgor/O/pCaTI4esFLtP0/vTkmkBfwLc1FVMesBnI8AAAAASUVORK5CYII=" alt="">
+            </button>
+            <select title="Seleecionar Escala de Imágenes" id="selectTypeDicomScale" onchange="changeScale(this.value)"></select>
+        </div>
+        <div>
+            <button title="Retirar Última Figura" id="buttonTypeRemoveLastFigure" onclick="removeLastFigure()">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAACBQAAAgUBU8S2FQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAR+SURBVHic5ZtdiFVVGIaf1+lPLXMq7AfUQIIwUYs0SSjolySigroIkQoyvEu9MAwiuqkoiKKi0LDIJigIQtJK8kJFCgTFwiw1tUhzwJIyTRp9u1h7YnOc87PPrLX3mdMLH+fM2Xuv9/veWf/r27JN1ZAkYILtw2VzjyqbsBaSpgBfA4ck3VM2f6UCSJoPbANmAQKuK9uHs8omBJB0AfAGML8K/jxKF0DSbKAPmFI291AorQlIGiVpGbCZDgkeSqoBki4H3gNuLYOvCJLXAEl3AzvowOAhoQCSzpX0KrAGuCQVz3CRpAlImgp8AExPUX5MRK8Bkh4HtjICgoeINUBSL7ASuD9WmWUgigCSbgJWAxNjlFcmhtUEJPVIehbYwAgMHoZRAyRNBt4H5sZzh15J420fjVhmQ6id5bCkB4G3gPHRPQo4CfQDvwL7gS3AJmC77VNRmWy3bMBYQkfniuxP4AvgUWBsEd/rxlQg+GuBXRUGX2t/EGrhrKQCENbpiwnVsuqg69l6YFp0AYAJwNoOCLAVGwBeBy6OIgBwB6ETqjqwovYbcFfbAgDnAC8BpzsgmHbtFLCssADAVYR5fNUBxLI+YHRLAgAPE4aZqp2ObWuAngZNnXGEpWvVjqa0FY0E2NIBDpZhz9QTYHMHOFeWnTE6QJjevt0BzpVh+4Ax9TrBB4DfO8DJ1PZio2FwErCxA5xMaQPA9EYToR7g6ezGqp1NZe+2MhW+kdBmqnY2hZ0gWzM0WwyNI8ymqnY4hS1tKkBOiAWE9XfVTse071sWIBNhMJGhasdj2sSWd4Vt7yVsgD5HWCl2A24otC1ue8D2csJB5y9pfCoVc9raFQaQdBFhg/S+iA49D6wizEcm5z5nAjMi8gxiU8t9QIO+YSHwF3Ha5JALloxnJvAaYccnVh/w3bAFyJy7mpDslEyAHNd5wEOR+A5EOR22vQuYA7ycFZwMtv+23ZfxrRhmcWOiHY/bPml7CTAPSJ7wmPEtBB4hzOzawejo+QG2PyPkBqyLXXYdvncI0/aDbTzenyRFxna/7XnAE4QDlaSwvZ1wXFYUe5ImSdl+BZgN7EzJk3F9ThhCiyCtAAC2dwDXA2+m5gKWUKwp7C4lUdL2CduLgHuBIwl5jhKaXatYX2qytO1PCB3khoQ0nxJOhprhB9vflp4tbvsgcDvwJPBPgvKPA9+0cOvHUFG6vO3Ttl8gDF978pciUXzVwj0fQsXvC9jeSki8WAkcAr6MVPTuJtfX2d4GFb0vkIftY8BjkYu9ohEl8NTgH5W/MpMIVza49tHgfx/+fwIcA5bnf+g6ASRdClxT5/KibGvvP3SdAMBSwp5BLVbZXl37Y9tbYp2IbJvuAHB+zaWdhHS647XPdFsNWMyZwf8I3DlU8NBFNUDSbYQ9iPzQvg+42fbPdZ/rBgEkTSMkelyY+3k/IfifGj074puApMsIC6B88BuBuc2Chy4QgPA63qTsuwlnC7dki66mqHwqHAG92ecRYIHttUUeHvF9gKSzganA3mxdUQj/AumRH12Cf44xAAAAAElFTkSuQmCC" alt="">
+            </button>
+        </div>
+    </div>
+</div>
+<h2 id="studyName" style="text-align: center; color: white; margin-top: 5px; margin-bottom: 5px;"></h2>
+<div id="divContentImages" style="display: flex">
+    <div id="divSeries" style="overflow-y: auto;"></div>
+    <div id="divImages" style="width: calc(100% - 230px); background-color: black; margin-left: 5px; margin-right: 10px; border-radius: 20px;"> <!-- style="width: 90%; background-color: blue; left: 5%; position: absolute; top: 0;"> -->
+        <div style="display: flex; justify-content: space-between">
+            <div style="margin-left: 10px; margin-top: 5px">
+                <div>
+                    <h3 id="h3Zoom" class="color-white" style="margin-bottom: 0; margin-top: 0;"></h3>
+                    <input id="inputRangeZoom" type="range" min="10" max="2000" step="10" value="100" aria-orientation="vertical" class="slider-vertical"
+                           onchange="changeRangeZoom(this.value)" oninput="changeRangeZoom(this.value)">
+                </div>
+            </div>
+<!--            <div style="margin-left: 10px; margin-top: 5px">-->
+<!--                <div>-->
+<!--                    <h3 id="h3Speed" class="color-white" style="margin-bottom: 0; margin-top: 0;"></h3>-->
+<!--                    <input type="range" min="10" max="200" step="5" value="100" aria-orientation="vertical" class="slider-vertical"-->
+<!--                           style="direction: rtl"-->
+<!--                           onchange="changeRangeSpeed(this.value)" oninput="changeRangeSpeed(this.value)">-->
+<!--                </div>-->
+<!--            </div>-->
+            <div style="margin-right: 10px; margin-top: 5px">
+                <div>
+                    <h3 id="h3Brightness" class="color-white" style="margin-bottom: 0; margin-top: 0;"></h3>
+                    <input type="range" min="0.1" max="4" step="0.1" value="1" aria-orientation="vertical" class="slider-vertical"
+                           onchange="changeRangeBrightness(this.value)" oninput="changeRangeBrightness(this.value)">
+                </div>
+            </div>
+            <div style="margin-right: 10px; margin-top: 5px">
+                <div>
+                    <h3 id="h3Rotate" class="color-white" style="margin-bottom: 0; margin-top: 0;"></h3>
+                    <input id="inputRangeRotate" type="range" min="0" max="360" step="1" value="0" aria-orientation="vertical" class="slider-vertical"
+                           onchange="changeRangeRotate(this.value)" oninput="changeRangeRotate(this.value)">
+                </div>
+            </div>
+        </div>
+        <div class="center" id="images"></div>
+        <div class="center" style="margin-top: 10px;">
+<!--            <button title="Reproducir o Pausar" id="buttonPLay" style="background-color: #F5BF87; padding: 5px; border-radius: 10px;" class="cursor-pointer" onclick="changePlay()">-->
+<!--                <img id="imgPlay" width="30" class="center">-->
+<!--            </button>-->
+            <button title="Ver imagen anterior" style="background-color: #F5BF87; padding: 5px; border-radius: 10px;" class="cursor-pointer" onclick="pause(); changeOfImage(true);">
+                <img width="30" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAHLAAABywEe8ZfVAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAV9QTFRF////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAb2VyaAAAAHR0Uk5TAAECBAYICQoLDA8RFBgZGhwdHiIkJigpKy0uMzQ3ODk6PD5CQ0RHSElLUVNVVldcZWZnbnZ3eHl+f4CGiImKi4+Rlpqeo6aoqqustLW3urzDxMrLzNDR0tfZ29zd3t/i4+Tm5+nr7O3v8PLz9fb4+fv8/f7nbPQSAAABp0lEQVRYw6XXV08CURAF4EGxF+wF7L1hb6CiYq/Yuyj2Lur5/xFWNq6C5l7OPO2QzJdNONnMiEja2DEQ9GWITnUsBQ9nC4xH2xqMCtjUx+u2jZHz0mjTjFi1qo7bx99jIwvRdtgERhTnnXvmBMKOSO81O6/SeMrgK76rTRso3oC1+nWB3scf8xjVA/JW8Ku8WkDnNRggew5ggKYzMED69AcYoOoAIIBUTxgMULYFEIBt4BkMUBgAGKDnHgyQuwwwQPslGCBrBmCA+hMwgH3iHQxg+ewlA6QMvYIBijcBBnDdgwKct6CAkiudeXjigEmt+QRvsE8CDpBAEQvIAQtMsUDFHfk3SvUD9wYiDU8kIJW7JCD2sTcOEKk9IgHJ9JOASEuIBCRnngRE3LckIPmrJCDS90gCvzdTfSCyG79wwP/RVluy/om26pr3Z7SVF80MPwn8FW2dZTthtPXWffcNCSSItiYQH20Pe3QNJHP2WaPdFfllxGyGFA9Pa7TLI32r2TQqApZoB4x9PraPr2sc3zU7xsiN6yumviBwqnf+27pXQxeL0eP9E3RHSacMyn41AAAAAElFTkSuQmCC" class="center">
+            </button>
+            <input type="range" min="0" class="slider" id="inputRangeImageAdvance"
+                   onchange="changeSlideRangeImageAdvance(this.value)" oninput="changeSlideRangeImageAdvance(this.value)">
+            <button title="Ver imagen siguiente" style="background-color: #F5BF87; padding: 5px; border-radius: 10px;" class="cursor-pointer" onclick="pause(); changeOfImage()">
+                <img width="30" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAHLAAABywEe8ZfVAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAXpQTFRF////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXI++1QAAAH10Uk5TAAECAwUGBwgKCwwNDxAREhMUFhgZGhsiIyUrLS4vNzk6PD4/QUNERUZHSEpVV1pjZWZnaGpzdXZ3eHl+gIGEhYaHiImLjJKTlJWWl5mcnaCkp6q0tre5ur7DxMXGx8jJysvOz9DR0tnb3ePl5ujs7e7v8vP09fb3+Pn8/f72RX5qAAABpUlEQVRYw6XXVVNCURQF4CWIioHdid3dHdjd3d2BAeL67z4IM+CMM+e6zjP7G+bee/beCwCcnuP7ze4EWDnlO++8X0gGAKSdkiQfOuzm9ZVfJMljOwBMMHj2c42Bg2BJHYDUjxDAt3ZTwB+s6AVQwbCzkWUGhH7fD6A5HOBTo2Wgj5FnJcUi0P8L4F2dCJBz8SLAa7cIMDDm0ADyolAE6O+xawC5myMCfG0TAXI9UwT42CAC5HKyCPC2VgTIWacI8KpEBPg57NAA8ixfBOjvsmkAuZ0tAvS2iAA5qQL0qAD7VOA1RgRYoQIeFRhXgUoReFMf4pD4GqfFD2kxSgJ8HTbpLpzkSdf5czBaaiiXRVJL+5qKk5rqTZXW1peSpMHyUK+NttV0abh6m7XxHjYK/gP4Om3SihM5Di0DvweyVeCqWFs0Z5zSqntboy3byy5p3f9jNTSOPGsZFiNPU+TsbLUcukoNF/Q/gURvWESwGQbPUFjtBoDRUP15gXH03QuWVAOA6+jn4g44zMN3WYAkefjzj2NHT172R9IsxX/31rPvZt4FfAPBCZveFHxH1wAAAABJRU5ErkJggg==" class="center">
+            </button>
+            <h4 id="labelImageCount" class="color-white"></h4>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+<script>
+    const typeLine = 'li';
+    const typeSquare = 'sq';
+    const typeCircle = 'ci';
+    const typeAngle = 'an';
+    const typeMove = 'mo';
+    let typeOptionToolbarSelected;
+    const countDivisionsSpace = 5;
+    let isPressedCanvas = false;
+    const listFigures = [];
+    const inputRangeZoom = document.getElementById('inputRangeZoom');
+    const divToolbar = document.getElementById('toolbar');
+    let buttonsSelected;
+    const buttonsToolbar = divToolbar.children;
+
+    let showRuler = true;
+
+    let xDown = 0;
+    let yDown = 0;
+    let xImage = 0;
+    let yImage = 0;
+    let degreeRotate = 0;
+
+    const fontPxSize = 14;
+
+    data = data.replace(/(\r\n|\n|\r)/gm, '');
+    let dataJSON = JSON.parse(data);
+    document.title = dataJSON.nameCompany;
+
+    let lastShowAllScales;
+    const listTypesDicomScale = dataJSON.typesDicomScala;
+    const defaultTypesDicomScale = listTypesDicomScale != null && listTypesDicomScale.length > 0 ? [dataJSON.typesDicomScala[0]] : [];
+    const extensionImages = dataJSON.extensionImages;
+    const selectTypeDicomScale = document.getElementById('selectTypeDicomScale');
+    const defaultSuffixNameImages = '';
+    let suffixNameImages = defaultSuffixNameImages;
+
+    let studyName = document.getElementById('studyName');
+    studyName.innerText = dataJSON.study.name;
+
+    const patientId = dataJSON.study.patientId;
+    const patientAge = dataJSON.study.age;
+    const patientName = dataJSON.study.patientName;
+    const studyDate = dataJSON.study.date;
+
+    let inputRangeImageAdvance = document.getElementById('inputRangeImageAdvance');
+    inputRangeImageAdvance.value = 0;
+    let labelImageCount = document.getElementById('labelImageCount');
+    let divSeries = document.getElementById('divSeries');
+    let divPatientInfo = document.getElementById('divPatientInfo');
+    var body = document.body,
+        html = document.documentElement;
+    let divContentImages = document.getElementById('divContentImages');
+    let heightBody = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+    divSeries.style.maxHeight = (heightBody - body.scrollHeight) + 'px';
+
+    let study = dataJSON.study;
+    let series = dataJSON.study.series;
+    // series[0].showAllScales = true;
+    let imagesCount = 0;
+    let playing = false;
+    let seriesSelected = series[0];
+    let image = series[0].images[0];
+    let div = document.getElementById('images');
+    let canvas = document.createElement('canvas');
+    let ctx = canvas.getContext("2d");
+    let imgTag = new Image();
+    let currentObjImage = image;
+
+    let h = (heightBody - 100 - body.scrollHeight) + 'px';
+    canvas.width = div.offsetWidth;
+    canvas.height = (heightBody - 60 - body.scrollHeight);
+    ctx.strokeStyle = 'yellow';
+    ctx.fillStyle = 'yellow';
+    ctx.lineWidth = 2;
+
+    let heightImageCanvas = canvas.height;
+    let widthImageCanvas;
+    let speedPlay = 50;
+
+    imgTag.onload = function() {
+        if (!widthImageCanvas) {
+            centerImage();
+        }
+        ctx.font = `${fontPxSize}px Arial`;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawRotatedRect(xImage, yImage, widthImageCanvas, heightImageCanvas, degreeRotate);
+    };
+
+    imgTag.onerror = function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = "20px Arial";
+        ctx.fillText("No hay Imagen\n para esta Escala", canvas.width / 2 - 150, canvas.height / 2);
+    }
+
+    function drawRotatedRect(x, y, width, height, degrees) {
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.translate(x + width / 2, y + height / 2);
+        ctx.rotate(degrees * Math.PI / 180);
+        ctx.drawImage(imgTag, -width / 2, -height / 2, width, height);
+
+        if (showRuler) {
+
+            if (currentObjImage.cmX) {
+                for (let i = 0; i <= countDivisionsSpace; i++) {
+                    const cm = ((currentObjImage.cmX / countDivisionsSpace) * i).toFixed(1);
+                    const xRule = - width / 2 + (i * (width / 5));
+                    const yRule1 = -height / 2;
+                    const yRule2 = yRule1 + 10;
+                    ctx.moveTo(xRule, yRule1);
+                    ctx.lineTo(xRule, yRule2);
+                    ctx.stroke();
+
+                    ctx.fillText(cm + ' cm', xRule + 5, yRule1 + 10);
+                }
+            }
+            if (currentObjImage.cmY) {
+                for (let i = 1; i <= countDivisionsSpace; i++) {
+                    const cm = ((currentObjImage.cmY / countDivisionsSpace) * i).toFixed(1);
+                    const xRule1 = width / 2;
+                    const xRule2 = xRule1 + 8;
+                    const yRule = (- height / 2) + (i * (height / 5));
+                    ctx.moveTo(xRule1, yRule);
+                    ctx.lineTo(xRule2, yRule);
+                    ctx.stroke();
+
+                    if (i !== 0) {
+                        ctx.fillText(cm + ' cm', xRule1 + 10, yRule);
+                    }
+                }
+            }
+        }
+
+        printAllFigures();
+
+        ctx.beginPath();
+        const xText = - (canvas.width / 2) + 5;
+        let yText = (-canvas.height / 2) + 40;
+        const text = document.createElement('label');
+        text.innerHTML = patientAge;
+        ctx.fillText(patientName, xText, yText);
+        ctx.fillText(patientId, xText, yText += 20);
+        ctx.fillText(studyDate, xText, yText += 20);
+        ctx.fillText(text.innerHTML, xText, yText += 20);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    function getSuffixComplete() {
+        return !suffixNameImages ? '' : ('-' + suffixNameImages);
+    }
+
+    setInterval(() => {
+        const path = (currentObjImage ? currentObjImage.path : undefined);
+        imgTag.src = path + getSuffixComplete();
+    }, 50);
+    div.appendChild(canvas);
+    let scale = 1;
+
+    let interval;
+    // let imgPlay = document.getElementById('imgPlay');
+
+    function loadSeriesImages() {
+        let divImage = document.createElement('div');
+        for (const seriesEach of series) {
+            let divImageContent = document.createElement('div');
+            let labelNameSeries = document.createElement('label');
+            labelNameSeries.textContent = seriesEach.name;
+            labelNameSeries.style.color = 'white';
+            labelNameSeries.style.width = '200px';
+            labelNameSeries.className = 'center';
+            labelNameSeries.style.textAlign = 'center';
+            // labelNameSeries.style.margin = 'auto';
+            labelNameSeries.style.float = 'right';
+            let imageSeries = new Image();
+            imageSeries.src = seriesEach.images[0] ? seriesEach.images[0].path : undefined;
+            // divImageContent.style.width = '80%';
+            // divImageContent.style.maxWidth = '200px';
+            // divImageContent.style.maxHeight = '200px';
+            // imageSeries.style.maxWidth = '200px';
+            imageSeries.style.maxHeight = '200px';
+            imageSeries.className = 'center';
+            // imageSeries.style.margin = 'auto';
+            imageSeries.style.float = 'right';
+            imageSeries.style.borderRadius = '10px';
+            imageSeries.style.paddingBottom = '20px';
+            imageSeries.style.cursor = 'pointer';
+            labelNameSeries.style.cursor = 'pointer';
+            divImageContent.style.padding = '10px';
+            divImageContent.style.margin = 'auto';
+            divImageContent.appendChild(labelNameSeries);
+            divImageContent.appendChild(imageSeries);
+            divImageContent.addEventListener('click', function () {
+                seriesSelected = seriesEach;
+                fillSelectScales();
+                currentObjImage = seriesSelected.images[0];
+                // imgTag.src = seriesSelected.images[0].path;
+                imagesCount = 0;
+                // play();
+                // playing = true;
+                setMaxRangeImageAdvance();
+                modifyImageRangeAdvance();
+                updateImageLabel();
+            });
+            divImage.appendChild(divImageContent);
+            divSeries.appendChild(divImage);
+        }
+    }
+
+    function updateImageLabel() {
+        let currentCount = imagesCount + 1;
+        labelImageCount.innerText = (currentCount >= 10 ? currentCount : '0' + currentCount) + ' de ' + seriesSelected.images.length;
+    }
+
+    function play() {
+        setImagePause();
+        clearInterval(interval);
+        playing = true;
+        interval = setInterval(() => {
+            changeOfImage();
+        }, speedPlay);
+    }
+
+    function pause() {
+        playing = false;
+        setImagePlay();
+        clearInterval(interval);
+    }
+
+    function changePlay() {
+        if (playing) {
+            pause();
+        } else {
+            play();
+        }
+    }
+
+    function changeOfImage(toTheLeft) {
+        imagesCount += !toTheLeft ? 1 : -1;
+        if (!toTheLeft && imagesCount > seriesSelected.images.length - 1) {
+            imagesCount = 0;
+        }
+        if (toTheLeft && imagesCount < 0) {
+            imagesCount = seriesSelected.images.length - 1;
+        }
+        currentObjImage = seriesSelected.images[imagesCount];
+        // imgTag.src = currentObjImage.path;
+        updateImageLabel();
+        modifyImageRangeAdvance();
+    }
+
+    function setImagePlay() {
+        // imgPlay.src = 'data:image/png;base64,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';
+    }
+
+    function setImagePause() {
+        // imgPlay.src = 'data:image/png;base64,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';
+    }
+
+    function modifyImageRangeAdvance() {
+        inputRangeImageAdvance.value = imagesCount;
+    }
+
+    function changeSlideRangeImageAdvance(value) {
+        pause();
+        currentObjImage = seriesSelected.images[+value];
+        // imgTag.src = currentObjImage.path;
+        imagesCount = +value;
+        updateImageLabel();
+    }
+
+    function setMaxRangeImageAdvance() {
+        inputRangeImageAdvance.max = [seriesSelected.images.length - 1];
+    }
+
+    function changeRangeZoom(value) {
+        if (!value) value = 100;
+        if (imgTag.width && imgTag.height) {
+            const oldHeight = heightImageCanvas;
+            const oldWidth = widthImageCanvas;
+            heightImageCanvas = canvas.height * (value / 100);
+            const scaleHeight = (heightImageCanvas * 100) / imgTag.height;
+            widthImageCanvas = imgTag.width * (scaleHeight / 100);
+            if (oldWidth) {
+                xImage += (oldWidth - widthImageCanvas) / 2;
+                yImage += (oldHeight - heightImageCanvas) / 2;
+                for (const figure of listFigures) {
+                    // figure.data.x1 += (oldWidth - widthImageCanvas) / 2;
+                    // figure.data.x2 -= (oldWidth - widthImageCanvas) / 2;
+                    // figure.data.y1 += (oldHeight - heightImageCanvas) / 2;
+                    // figure.data.y2 -= (oldHeight - heightImageCanvas) / 2;
+                }
+            }
+            document.getElementById('h3Zoom').innerText = `Tamaño: ${value}%`;
+        }
+        inputRangeZoom.value = value;
+    }
+
+    function changeRangeSpeed(value) {
+        if (!value) value = 100;
+        speedPlay = value;
+        if (playing) {
+            play();
+        }
+        document.getElementById('h3Speed').innerText = `Velocidad: ${value}`;
+    }
+
+    function changeRangeBrightness(value) {
+        if (!value) value = 1;
+        canvas.style.filter = `brightness(${value})`;
+        document.getElementById('h3Brightness').innerText = `Luminosidad: ${value}`;
+    }
+
+    function changeRangeRotate(value) {
+        if (!value) value = 0;
+        degreeRotate = value;
+        document.getElementById('inputRangeRotate').value = value;
+        document.getElementById('h3Rotate').innerText = `Rotación: ${value}°`;
+    }
+
+    function manageEventsCanvas() {
+        canvas.addEventListener('mousedown', (event) => {
+            actionPressButtonWheel(event, true);
+            isPressedCanvas = true;
+            eventOptionsToolbarUpdate(event);
+        }, true);
+        canvas.addEventListener('mousemove', (event) => {
+            eventOptionsToolbarUpdate(event);
+        }, true);
+        canvas.addEventListener('mouseup', (event) => {
+            isPressedCanvas = false;
+            if (listFigures.length > 0) { // Verificar si la figura está en el mismo punto
+                const lastFigure = listFigures[0];
+                if (lastFigure.data && (!lastFigure.data.x2 || !lastFigure.data.y2) || (lastFigure.data.x1 === lastFigure.data.x2 && lastFigure.data.y1 === lastFigure.data.y2)) {
+                    listFigures.splice(0, 1);
+                    return;
+                }
+            }
+            actionPressButtonWheel(event, false);
+            xDown = 0;
+            yDown = 0;
+        }, true);
+        canvas.addEventListener('wheel', (event) => {
+            if (event.ctrlKey) {
+                event.preventDefault();
+                if (event.deltaY < 0) {
+                    inputRangeZoom.value = +inputRangeZoom.value + 10;
+                    changeRangeZoom(+inputRangeZoom.value);
+                } else {
+                    inputRangeZoom.value = +inputRangeZoom.value - 10;
+                    changeRangeZoom(+inputRangeZoom.value);
+                }
+            } else {
+                if (event.deltaY < 0) {
+                    changeOfImage();
+                } else {
+                    changeOfImage(true);
+                }
+                pause();
+            }
+        }, true);
+        body.addEventListener('keyup', (event) => {
+            if (event.ctrlKey && event.key === 'z') {
+                if (listFigures.length > 0) {
+                    listFigures.splice(0, 1);
+                }
+            }
+        }, true);
+    }
+
+    function actionPressButtonWheel(event, active) {
+        if (event.button === 1) { // Botón de rueda del mouse
+            if (active) {
+                typeOptionToolbarSelected = typeMove;
+                pressOptionToolbar(true, typeMove);
+            } else {
+                typeOptionToolbarSelected = undefined;
+                pressOptionToolbar(true, typeMove);
+            }
+        }
+    }
+
+    function eventOptionsToolbarUpdate(event) {
+        if (isPressedCanvas) {
+            const rect = canvas.getBoundingClientRect();
+            const x = (event.clientX - rect.left) - widthImageCanvas/2;
+            const y = (event.clientY - rect.top) - heightImageCanvas/2;
+            switch (event.type) {
+                case 'mousedown':
+                    if (typeOptionToolbarSelected === typeAngle && listFigures.length > 0) {
+                        if (listFigures[0].type === typeAngle && !listFigures[0].isDone) {
+                            listFigures[0].isDone = true;
+                            break;
+                        }
+                    }
+                    if (typeOptionToolbarSelected === typeMove) {
+                        xDown = x;
+                        yDown = y;
+                    } else {
+                        listFigures.unshift({
+                            type: typeOptionToolbarSelected,
+                            data: {x1: x - xImage, y1: y - yImage}
+                        });
+                    }
+                    break;
+                case 'mousemove':
+                    if (typeOptionToolbarSelected === typeAngle && listFigures.length > 0 && listFigures[0].data1) {
+                        break;
+                    }
+                    if (typeOptionToolbarSelected === typeMove) {
+                        const xMove = x - xDown;
+                        const yMove = y - yDown;
+                        xImage += xMove;
+                        yImage += yMove;
+                        // for (const figure of listFigures) {
+                        //     figure.data.x1 += xMove;
+                        //     figure.data.x2 += xMove;
+                        //     figure.data.y1 += yMove;
+                        //     figure.data.y2 += yMove;
+                        // }
+                        xDown = x;
+                        yDown = y;
+                    } else {
+                        listFigures[0].data.x2 = x - xImage;
+                        listFigures[0].data.y2 = y - yImage;
+                    }
+                    break;
+            }
+        } else {
+            if (listFigures.length > 0) {
+                if (event.type === 'mousemove' && typeOptionToolbarSelected === typeAngle && !listFigures[0].isDone) {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = (event.clientX - rect.left) - widthImageCanvas/2;
+                    const y = (event.clientY - rect.top) - heightImageCanvas/2;
+                    listFigures[0].data1 = {x2: x - xImage, y2: y - yImage};
+                }
+            }
+        }
+    }
+
+    function getCmX(v1, v2) {
+        if (currentObjImage.cmX) {
+            return (((v2 - v1) * currentObjImage.cmX) / widthImageCanvas).toFixed(1);
+        }
+        return '';
+    }
+
+    function getCmY(v1, v2) {
+        if (currentObjImage.cmY) {
+            return (((v2 - v1) * currentObjImage.cmY) / heightImageCanvas).toFixed(1);
+        }
+        return '';
+    }
+
+    function getMmX(v1, v2) {
+        if (currentObjImage.cmX) {
+            return Math.abs((((v2 - v1) * currentObjImage.cmX) / widthImageCanvas) * 10).toFixed(1) + 'mm';
+        }
+        return '';
+    }
+
+    function getMmY(v1, v2) {
+        if (currentObjImage.cmY) {
+            return Math.abs((((v2 - v1) * currentObjImage.cmY) / heightImageCanvas) * 10).toFixed(1) + 'mm';
+        }
+        return '';
+    }
+
+    function printAllFigures() {
+        for (const figure of listFigures) {
+            const data = figure.data;
+            ctx.font = `${fontPxSize}px Arial`;
+            switch (figure.type) {
+                case typeLine:
+                    // ctx.strokeStyle = '#FF0000';
+                    ctx.beginPath();
+                    ctx.moveTo(data.x1, data.y1);
+                    ctx.lineTo(data.x2, data.y2);
+                    // ctx.fillText(`x=${getMmX(data.x1, data.x2)}, y=${getMmY(data.y1, data.y2)}`, data.x2 + 5, data.y2 - 5)
+                    ctx.stroke();
+                    printText(`x=${getMmX(data.x1, data.x2)}, y=${getMmY(data.y1, data.y2)}`, data.x2 + 5, data.y2 - 5);
+                    break;
+                case typeSquare:
+                    // ctx.strokeStyle = '#FF0000';
+                    ctx.beginPath();
+                    ctx.rect(data.x1, data.y1, data.x2 - data.x1, data.y2 - data.y1);
+                    // ctx.fillText(`x=${getMmX(data.x1, data.x2)}, y=${getMmY(data.y1, data.y2)}`, data.x2 + 5, data.y2 - 5)
+                    ctx.stroke();
+                    printText(`x=${getMmX(data.x1, data.x2)}, y=${getMmY(data.y1, data.y2)}`, data.x2 + 5, data.y2 - 5);
+                    break;
+                case typeCircle:
+                    // ctx.strokeStyle = '#FF0000';
+                    ctx.beginPath();
+                    ctx.arc(data.x1, data.y1, Math.abs(data.x2 - data.x1), 0, 2 * Math.PI);
+                    // ctx.fillText(`radio=${getMmX(data.x1, data.x2)}`, data.x2 + 5, data.y1 - 5)
+                    ctx.stroke();
+                    printText(`radio=${getMmX(data.x1, data.x2)}`, data.x2 + 5, data.y1 - 5);
+                    break;
+                case typeAngle:
+                    const data1 = figure.data1;
+                    // ctx.strokeStyle = '#FF0000';
+                    ctx.beginPath();
+                    ctx.moveTo(data.x1, data.y1);
+                    ctx.lineTo(data.x2, data.y2);
+                    ctx.stroke();
+                    if (data1) {
+                        const dx21 = data.x1-data.x2;
+                        const dx31 = data1.x2-data.x2;
+                        const dy21 = data.y1-data.y2;
+                        const dy31 = data1.y2-data.y2;
+                        const m12 = Math.sqrt( dx21*dx21 + dy21*dy21 );
+                        const m13 = Math.sqrt( dx31*dx31 + dy31*dy31 );
+                        const theta = Math.acos( (dx21*dx31 + dy21*dy31) / (m12 * m13) );
+                        const angle = (theta * (180 / Math.PI)).toFixed(1);
+                        ctx.beginPath();
+                        ctx.moveTo(data.x2, data.y2);
+                        ctx.lineTo(data1.x2, data1.y2);
+                        let angle1 = (Math.atan2( data.y1 - data.y2, data.x1 - data.x2 )) * (180 / Math.PI);
+                        // angle1 = angle1 < 0 ? 360 + angle1 : angle1;
+                        const angle1Pi = (Math.atan2( data.y1 - data.y2, data.x1 - data.x2 ));
+                        const angle2Pi = (Math.atan2( data1.y2 - data.y2, data1.x2 - data.x2 ));
+                        let angle2 = (Math.atan2( data1.y2 - data.y2, data1.x2 - data.x2 )) * (180 / Math.PI);
+                        angle2 = angle2 < 0 ? 360 + angle2 : angle2;
+                        const angleStart = (angle2 - angle1) < 0 && (angle2 - angle1) > -Math.PI ? angle2 : angle1;
+                        const lengthLine = Math.sqrt(Math.pow((data1.y2 - data.y2), 2) + Math.pow((data1.x2 - data.x2), 2));
+                        const maxLengthArc = Math.min(lengthLine, 15);
+                        // ctx.arc(data.x2, data.y2, maxLengthArc, angle1Pi, angle1Pi + theta);
+                        // ctx.fillText(`${angle}°`, data.x2 + 5, data.y2 - 5)
+                        ctx.stroke();
+                        printText(`${angle}°`, data.x2 + 20, data.y2 + 15);
+                    }
+                    break;
+            }
+        }
+    }
+
+    function printText(text, x, y) {
+        const angleText = text;
+        const widthText = ctx.measureText(angleText).width;
+        ctx.beginPath();
+        ctx.fillStyle = 'black';
+        ctx.fillRect(x, y - fontPxSize, widthText, fontPxSize + 5);
+        ctx.fillStyle = 'yellow';
+        ctx.fillText(angleText, x, y);
+        ctx.stroke();
+    }
+
+    function pressOptionToolbar(button, typeSelected) {
+        if (typeSelected === typeOptionToolbarSelected) {
+            canvas.classList.remove('cursor-pointer');
+        } else {
+            canvas.classList.add('cursor-pointer');
+        }
+        if (buttonsSelected === button) {
+            typeOptionToolbarSelected = undefined;
+            button.className = 'button-toolbar-default';
+            buttonsSelected = undefined;
+        } else {
+            typeOptionToolbarSelected = typeSelected;
+            if (buttonsSelected) {
+                buttonsSelected.className = 'button-toolbar-default';
+            }
+            buttonsSelected = button;
+            button.className = 'button-toolbar-selected';
+        }
+    }
+
+    function printImage() {
+
+        window.print();
+
+        return true;
+    }
+
+    function removeLastFigure() {
+        listFigures.splice(0, 1);
+    }
+
+    function clickRuler() {
+        showRuler = !showRuler;
+        if (!showRuler) {
+            document.getElementById('buttonTypeRuler').classList.remove('button-toolbar-selected');
+        } else {
+            document.getElementById('buttonTypeRuler').classList.add('button-toolbar-selected');
+        }
+    }
+
+    function centerImage() {
+        changeRangeZoom();
+        xImage = (canvas.width / 2) - (widthImageCanvas / 2);
+        yImage = 0;
+        changeRangeRotate();
+    }
+
+    function changeScale(titleScale) {
+        const scale = listTypesDicomScale.find(t => t.title === titleScale)
+        suffixNameImages = scale.suffix;
+    }
+
+    function fillSelectScales() {
+        const scales = !seriesSelected.showAllScales ? defaultTypesDicomScale : listTypesDicomScale;
+        suffixNameImages = !seriesSelected.showAllScales ? defaultSuffixNameImages : suffixNameImages;
+        if (seriesSelected.showAllScales !== lastShowAllScales) {
+            selectTypeDicomScale.innerHTML = '';
+            for (const scale of scales) {
+                const option = document.createElement('option');
+                option.value = scale.title;
+                option.innerHTML = scale.title;
+                selectTypeDicomScale.appendChild(option);
+            }
+        }
+        lastShowAllScales = seriesSelected.showAllScales;
+    }
+
+    fillSelectScales();
+    updateImageLabel();
+    // changeRangeSpeed();
+    changeRangeBrightness(0);
+    // changeRangeRotate();
+    loadSeriesImages();
+    setImagePlay();
+    // play();
+    setMaxRangeImageAdvance();
+    manageEventsCanvas();
+</script>
+
+
